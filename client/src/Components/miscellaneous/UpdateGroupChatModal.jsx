@@ -22,6 +22,12 @@ import { ChatState } from '../../Context/ChatProvider';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import UserListItem from '../UserAvatar/UserListItem';
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_REST_API,
+  withCredentials: true,
+  credentials: 'include'
+});
+
 const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [groupChatName, setGroupChatName] = useState();
@@ -50,7 +56,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.patch(
+      const { data } = await api.patch(
         `/api/chat/groupremove`,
         {
           chatId: selectedChat._id,
@@ -107,7 +113,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.patch(
+      const { data } = await api.patch(
         `/api/chat/groupadd`,
         {
           chatId: selectedChat._id,
@@ -143,7 +149,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.patch(
+      const { data } = await api.patch(
         `/api/chat/rename`,
         {
           chatId: selectedChat._id,
@@ -182,7 +188,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
+      const { data } = await api.get(`/api/user?search=${search}`, config);
 
       setLoading(false);
       setSearchResult(data);

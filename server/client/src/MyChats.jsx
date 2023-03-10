@@ -7,6 +7,12 @@ import ChatLoading from './Components/miscellaneous/ChatLoading';
 import { getSender } from './config/ChatLogics';
 import GroupChatModal from './Components/miscellaneous/GroupChatModal';
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_REST_API,
+  withCredentials: true,
+  credentials: 'include'
+});
+
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
 
@@ -23,7 +29,7 @@ const MyChats = ({ fetchAgain }) => {
         }
       };
 
-      const { data } = await axios.get('/api/chat', config);
+      const { data } = await api.get('/api/chat', config);
       setChats(data);
     } catch (error) {
       toast({
@@ -86,7 +92,7 @@ const MyChats = ({ fetchAgain }) => {
       >
         {chats ? (
           <Stack overflowY="scroll">
-            {chats.map(chat => (
+            {chats.map((chat) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"

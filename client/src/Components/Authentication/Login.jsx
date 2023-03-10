@@ -17,6 +17,12 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const api = axios.create({
+    baseURL: process.env.REACT_APP_REST_API,
+    withCredentials: true,
+    credentials: 'include'
+  });
+
   const submitHandler = async () => {
     setLoading(true);
     if (!email || !password) {
@@ -38,8 +44,8 @@ const Login = () => {
         }
       };
 
-      const { data } = await axios.post(
-        'https://wuzzapp-backend.onrender.com/api/user/login',
+      const { data } = await api.post(
+        '/api/user/login',
         { email, password },
         config
       );

@@ -35,6 +35,12 @@ import { getSender } from '../../config/ChatLogics';
 import NotificationBadge from 'react-notification-badge';
 import { Effect } from 'react-notification-badge';
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_REST_API,
+  withCredentials: true,
+  credentials: 'include'
+});
+
 const SideDrawer = () => {
   const [search, setSearch] = useState('');
   const [searchResult, setSearchResult] = useState([]);
@@ -80,7 +86,7 @@ const SideDrawer = () => {
         }
       };
 
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
+      const { data } = await api.get(`/api/user?search=${search}`, config);
 
       setLoading(false);
       setSearchResult(data);
@@ -96,7 +102,7 @@ const SideDrawer = () => {
     }
   };
 
-  const accessChat = async userId => {
+  const accessChat = async (userId) => {
     console.log(userId);
 
     try {
@@ -107,9 +113,9 @@ const SideDrawer = () => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.post(`/api/chat`, { userId }, config);
+      const { data } = await api.post(`/api/chat`, { userId }, config);
 
-      if (!chats.find(c => c._id === data._id)) setChats([data, ...chats]);
+      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
       setLoadingChat(false);
       onClose();
@@ -163,12 +169,12 @@ const SideDrawer = () => {
             </MenuButton>
             <MenuList pl={2}>
               {!notification.length && 'No new messages'}
-              {notification.map(notif => (
+              {notification.map((notif) => (
                 <MenuItem
                   key={notif._id}
                   onClick={() => {
                     setSelectedChat(notif.chat);
-                    setNotification(notification.filter(n => n !== notif));
+                    setNotification(notification.filter((n) => n !== notif));
                   }}
                 >
                   {notif.chat.isGrouChat
@@ -207,14 +213,14 @@ const SideDrawer = () => {
                 placeholder="Search by name or email"
                 mr={2}
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={(e) => setSearch(e.target.value)}
               />
               <Button onClick={handleSearch}>Go</Button>
             </Box>
             {loading ? (
               <ChatLoading />
             ) : (
-              searchResult?.map(user => (
+              searchResult?.map((user) => (
                 <UserListItem
                   key={user._id}
                   user={user}

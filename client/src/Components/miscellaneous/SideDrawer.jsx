@@ -35,6 +35,12 @@ import { getSender } from '../../config/ChatLogics';
 import NotificationBadge from 'react-notification-badge';
 import { Effect } from 'react-notification-badge';
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_REST_API,
+  withCredentials: true,
+  credentials: 'include'
+});
+
 const SideDrawer = () => {
   const [search, setSearch] = useState('');
   const [searchResult, setSearchResult] = useState([]);
@@ -80,7 +86,7 @@ const SideDrawer = () => {
         }
       };
 
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
+      const { data } = await api.get(`/api/user?search=${search}`, config);
 
       setLoading(false);
       setSearchResult(data);
@@ -107,7 +113,7 @@ const SideDrawer = () => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.post(`/api/chat`, { userId }, config);
+      const { data } = await api.post(`/api/chat`, { userId }, config);
 
       if (!chats.find(c => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);

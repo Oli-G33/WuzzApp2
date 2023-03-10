@@ -25,7 +25,13 @@ const SignUp = () => {
 
   const handleClick = () => setShow(!show);
 
-  const postDetails = pics => {
+  const api = axios.create({
+    baseURL: process.env.REACT_APP_REST_API,
+    withCredentials: true,
+    credentials: 'include'
+  });
+
+  const postDetails = (pics) => {
     setLoading(true);
     if (pics === undefined) {
       toast({
@@ -46,13 +52,13 @@ const SignUp = () => {
         method: 'post',
         body: data
       })
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           setPicture(data.url.toString());
           console.log(data.url.toString());
           setLoading(false);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           setLoading(false);
         });
@@ -100,7 +106,7 @@ const SignUp = () => {
           'Content-type': 'application/json'
         }
       };
-      const { data } = await axios.post(
+      const { data } = await api.post(
         '/api/user',
         {
           name,
@@ -141,7 +147,7 @@ const SignUp = () => {
         <FormLabel>Name</FormLabel>
         <Input
           placeholder="Enter your name"
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
 
@@ -149,7 +155,7 @@ const SignUp = () => {
         <FormLabel>Email</FormLabel>
         <Input
           placeholder="Enter your email address"
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
 
@@ -159,7 +165,7 @@ const SignUp = () => {
           <Input
             type={show ? 'text' : 'password'}
             placeholder="Enter password"
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
             <Button h="1.75rem" size="sm" onClick={handleClick}>
@@ -175,7 +181,7 @@ const SignUp = () => {
           <Input
             type={show ? 'text' : 'password'}
             placeholder="Confirm password"
-            onChange={e => setConfirmpassword(e.target.value)}
+            onChange={(e) => setConfirmpassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
             <Button h="1.75rem" size="sm" onClick={handleClick}>
@@ -191,7 +197,7 @@ const SignUp = () => {
           type="file"
           p={1.5}
           accept="image/*"
-          onChange={e => postDetails(e.target.files[0])}
+          onChange={(e) => postDetails(e.target.files[0])}
         />
       </FormControl>
 

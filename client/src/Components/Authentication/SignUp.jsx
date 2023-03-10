@@ -12,6 +12,12 @@ import { useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_REST_API,
+  withCredentials: true,
+  credentials: 'include'
+});
+
 const SignUp = () => {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
@@ -100,7 +106,7 @@ const SignUp = () => {
           'Content-type': 'application/json'
         }
       };
-      const { data } = await axios.post(
+      const { data } = await api.post(
         '/api/user',
         {
           name,

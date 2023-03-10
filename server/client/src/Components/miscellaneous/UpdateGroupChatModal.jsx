@@ -22,6 +22,12 @@ import { ChatState } from '../../Context/ChatProvider';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import UserListItem from '../UserAvatar/UserListItem';
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_REST_API,
+  withCredentials: true,
+  credentials: 'include'
+});
+
 const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [groupChatName, setGroupChatName] = useState();
@@ -31,7 +37,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
   const [renameloading, setRenameLoading] = useState(false);
   const toast = useToast();
 
-  const handleRemove = async user1 => {
+  const handleRemove = async (user1) => {
     if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
       toast({
         title: 'Only admins can remove someone!',
@@ -50,7 +56,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.patch(
+      const { data } = await api.patch(
         `/api/chat/groupremove`,
         {
           chatId: selectedChat._id,
@@ -77,8 +83,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
     setGroupChatName('');
   };
 
-  const handleAddUser = async user1 => {
-    if (selectedChat.users.find(u => u._id === user1._id)) {
+  const handleAddUser = async (user1) => {
+    if (selectedChat.users.find((u) => u._id === user1._id)) {
       toast({
         title: 'User Already in group!',
         status: 'error',
@@ -107,7 +113,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.patch(
+      const { data } = await api.patch(
         `/api/chat/groupadd`,
         {
           chatId: selectedChat._id,
@@ -143,7 +149,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.patch(
+      const { data } = await api.patch(
         `/api/chat/rename`,
         {
           chatId: selectedChat._id,
@@ -169,7 +175,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
     }
     setGroupChatName('');
   };
-  const handleSearch = async query => {
+  const handleSearch = async (query) => {
     setSearch(query);
     if (!query) {
       return;
@@ -182,7 +188,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
           Authorization: `Bearer ${user.token}`
         }
       };
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
+      const { data } = await api.get(`/api/user?search=${search}`, config);
 
       setLoading(false);
       setSearchResult(data);
@@ -223,7 +229,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
           <ModalCloseButton />
           <ModalBody>
             <Box w="100%" display="flex" flexWrap="wrap" pb={3}>
-              {selectedChat.users.map(u => (
+              {selectedChat.users.map((u) => (
                 <UserBadgeItem
                   key={u._id}
                   user={u}
@@ -236,7 +242,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
                 placeholder="Chat Name"
                 mb={3}
                 value={groupChatName}
-                onChange={e => setGroupChatName(e.target.value)}
+                onChange={(e) => setGroupChatName(e.target.value)}
               />
               <Button
                 variant="solid"
@@ -253,13 +259,13 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
               <Input
                 placeholder="Add User to group"
                 mb={1}
-                onChange={e => handleSearch(e.target.value)}
+                onChange={(e) => handleSearch(e.target.value)}
               />
             </FormControl>
             {loading ? (
               <Spinner size="lg" />
             ) : (
-              searchResult?.map(user => (
+              searchResult?.map((user) => (
                 <UserListItem
                   key={user._id}
                   user={user}

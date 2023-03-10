@@ -21,6 +21,12 @@ import io from 'socket.io-client';
 import Lottie from 'react-lottie';
 import animationData from '../animations/typing.json';
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_REST_API,
+  withCredentials: true,
+  credentials: 'include'
+});
+
 const ENDPOINT = 'https://wuzzapp2.onrender.com';
 let socket, selectedChatCompare;
 
@@ -57,7 +63,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
       setLoading(true);
 
-      const { data } = await axios.get(
+      const { data } = await api.get(
         `/api/message/${selectedChat._id}`,
         config
       );
@@ -95,7 +101,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   }, [selectedChat]);
 
   useEffect(() => {
-    socket.on('message received', newMessageReceived => {
+    socket.on('message received', (newMessageReceived) => {
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
@@ -111,7 +117,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     });
   });
 
-  const sendMessage = async event => {
+  const sendMessage = async (event) => {
     if (event.key === 'Enter' && newMessage) {
       socket.emit('stop typing', selectedChat._id);
       try {
@@ -123,7 +129,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
         setNewMessage('');
 
-        const { data } = await axios.post(
+        const { data } = await api.post(
           '/api/message',
           { content: newMessage, chatId: selectedChat._id },
           config
@@ -144,7 +150,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-  const typingHandler = e => {
+  const typingHandler = (e) => {
     setNewMessage(e.target.value);
 
     if (!socketConnected) return;

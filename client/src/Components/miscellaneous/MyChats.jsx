@@ -13,6 +13,12 @@ const MyChats = ({ fetchAgain }) => {
 
   const toast = useToast();
 
+  const api = axios.create({
+    baseURL: process.env.REACT_APP_REST_API,
+    withCredentials: true,
+    credentials: 'include'
+  });
+
   const fetchChats = async () => {
     // console.log(user._id);
     try {
@@ -22,7 +28,7 @@ const MyChats = ({ fetchAgain }) => {
         }
       };
 
-      const { data } = await axios.get('/api/chat', config);
+      const { data } = await api.get('/api/chat', config);
 
       setChats(data);
     } catch (error) {

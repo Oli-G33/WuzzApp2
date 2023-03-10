@@ -17,6 +17,12 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const api = axios.create({
+    baseURL: process.env.REACT_APP_REST_API,
+    withCredentials: true,
+    credentials: 'include'
+  });
+
   const submitHandler = async () => {
     setLoading(true);
     if (!email || !password) {
@@ -38,7 +44,7 @@ const Login = () => {
         }
       };
 
-      const { data } = await axios.post(
+      const { data } = await api.post(
         '/api/user/login',
         { email, password },
         config
@@ -76,7 +82,7 @@ const Login = () => {
           value={email}
           type="email"
           placeholder="Enter Your Email Address"
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
       <FormControl id="password" isRequired>
@@ -84,7 +90,7 @@ const Login = () => {
         <InputGroup size="md">
           <Input
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             type={show ? 'text' : 'password'}
             placeholder="Enter password"
           />
