@@ -61,7 +61,6 @@ const Login = () => {
       console.log(data);
       setLoading(false);
       navigate('/chats');
-      window.location.reload();
     } catch (error) {
       toast({
         title: 'Error Occured!',
